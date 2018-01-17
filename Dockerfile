@@ -11,4 +11,5 @@ ADD ["src", "/home/app"]
 
 WORKDIR /home/app
 USER app
-CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app" ]
+EXPOSE 14505
+CMD ["gunicorn", "--config", "config.py", "ano_inbox.app:app"]

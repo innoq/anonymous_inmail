@@ -30,6 +30,7 @@ Docker.
 Have a `config.yaml` file in this directory. It should contain (to be
 documented).
 
+## Build
 
 With that in place, run something like
 
@@ -42,3 +43,10 @@ Docker builds:
 
 You may need to replace the 192.168.0.1 with the Docker host's IP
 used on your machine.
+
+## Run
+
+    docker run --publish 80:14505 registry.invalid/anonymous_mailbox
+
+(or choose another port instead of the 80 if you already run an HTTP
+server).
