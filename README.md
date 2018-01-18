@@ -39,12 +39,12 @@ Docker.
 
 With Docker in place, run something like
 
-    docker build -t registry.invalid/anonymous_mailbox .
+    docker build -t registry.invalid/anonymous_inbox .
 
 or, if you are like me and use a local http proxy to speed up repeated
 Docker builds:
 
-    docker build --build-arg=http_proxy=http://192.168.0.1:3128/  -t registry.invalid/anonymous_mailbox .
+    docker build --build-arg=http_proxy=http://192.168.0.1:3128/  -t registry.invalid/anonymous_inbox .
 
 You may need to replace the 192.168.0.1 with the Docker host's IP
 used on your machine.
@@ -70,7 +70,7 @@ recipient addresses will be extracted automatically.
 
 Something like
 
-    docker run --env=... --publish 80:14505 registry.invalid/anonymous_mailbox
+    docker run --env=... --publish 80:14505 registry.invalid/anonymous_inbox
 
 (or choose another port instead of the 80 if you already run an HTTP
 server on that box).
