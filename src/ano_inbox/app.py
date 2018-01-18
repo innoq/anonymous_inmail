@@ -1,5 +1,6 @@
 import sys
-from flask import Flask, render_template, request
+import time
+from flask import Flask, render_template, request, Response
 app = Flask(__name__)
 
 @app.route('/')
@@ -8,8 +9,14 @@ def hello_world():
 
 @app.route("/submit", methods=['POST'])
 def submit():
-    d = request.form
-    sys.stderr.write("Have a POST request\n")
-    for k in d.keys():
-        sys.stderr.write("{} -> {}\n".format(k, d.getlist(k)))
-    return render_template('sent.html')
+    response = Response(stutter(request.form['text']))
+    response.mimetype = "text/plain"
+    return response
+
+def stutter(text):
+    yield("Getting ready to send your text:\n\n------------------------------\n\n")
+    time.sleep(5)
+    yield(text)
+    time.sleep(5)
+    yield("\n\n\n(Not sending yet, sorry.)\n\n")
+

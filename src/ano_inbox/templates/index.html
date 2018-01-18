@@ -1,13 +1,16 @@
 <html>
   <head>
     <title>Anonymous mailbox</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="/static/ano_inbox.css">
   </head>
   <body>
     <h1>Send an anonymous mail to INNOQ.</h1>
     <form autocomplete="off" enctype="multipart/form-data" method="POST" action="/submit">
       <textarea name="text" rows="40" cols="130" ></textarea>
-      <input type="submit" name="trigger" value="Send" />
-      <input type="submit" name="trigger" value="Review" />
+      <div class="inform">
+        <input type="submit" name="trigger" value="Send" />
+      </div>
     </form>
   </body>
 </html>
