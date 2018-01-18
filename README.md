@@ -11,24 +11,29 @@ but not published outside.  We occasionally change the credentials.
 ## How does it work?
 
 You type in an email.  It is never stored anywhere, but immediately
-sent to an INNOQ SMTP server.  You can see that while it happens.
+sent to an SMTP server.  You can see that while it happens.
 
 ## Why is it anonymous?
 
 * Everybody uses the same basic auth credentials.
 
-* You can trust us to never log the IP of the incoming mail (or, if
-  you don't, use a coffee shop WiFi, some friend's computer, an
-  internet cafe, or [Tor](https://www.torproject.org/)).
+* No cookies, sessions, external resources.
+
+* You can trust us to never log the IP of the incoming mail submission
+  (or, if you don't, use a coffee shop WiFi, some friend's computer,
+  an internet cafe, or [Tor](https://www.torproject.org/)).
+
+* To guard against spoofing by admins, we do not log the text submitted,
+  and also that text is encrypted towards the recipients' S/MIME keys.
+
+* We don't do HTTPS ourselves (maybe some time we will, for the time
+  now, it's only a convenience that we don't).  We leave that to a
+  reverse proxy in front of us.  So the last yard of network, your
+  data is unencrypted.
 
 ## Prerequisites (installation)
 
 Docker.
-
-## Prerequisites (files)
-
-Have a `config.yaml` file in this directory. It should contain (to be
-documented).
 
 ## Build
 
@@ -44,9 +49,18 @@ Docker builds:
 You may need to replace the 192.168.0.1 with the Docker host's IP
 used on your machine.
 
+## Environment variables for configuration
+
+`ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
+
+`ano_inbox.recipients` The recipient(s) to send mail to, separated by
+";".  No default, you *must* provide these.
+
 ## Run
 
-    docker run --publish 80:14505 registry.invalid/anonymous_mailbox
+Something like
+
+    docker run --env=... --publish 80:14505 registry.invalid/anonymous_mailbox
 
 (or choose another port instead of the 80 if you already run an HTTP
-server).
+server).  But then, you'd have to also provide the environment variables.

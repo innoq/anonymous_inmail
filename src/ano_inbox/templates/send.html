@@ -1,22 +1,23 @@
 <html>
   <head>
-    <title>{{ title }}</title>
+    <title>Sending your text anonymously</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="/static/ano_inbox.css">
   </head>
   <body>
-    <h1>{{ title }}</h1>
+    <h1>Sending your data</h1>
+    
     <p>Email recipients will be</p>
     <ul>
       {% for recipient in recipients %}
       <li>{{ recipient }}</li>
       {% endfor %}
     </ul>
-    <form autocomplete="off" enctype="multipart/form-data" method="POST" action="/submit">
-      <textarea name="text" rows="30" cols="130" ></textarea>
-      <div class="inform">
-        <input type="submit" name="trigger" value="Send" />
-      </div>
-    </form>
+
+    <h2>You text we are about to send</h2>
+    <pre>{{ text }}</pre>
+
+    <h3>Here is a log of the technical stuff as we are doing it.</h3>
+    <pre>{% for partial_output in action %}{{ partial_output | safe }}{% endfor %}</pre>
   </body>
 </html>

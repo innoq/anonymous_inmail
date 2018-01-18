@@ -1,4 +1,9 @@
 body form .inform input {
     margin:  1ex 0em 1ex 0em;
-    padding: 1ex 2em 1ex 0em;
+    padding: 1ex 1em 1ex 1em;
+}
+
+.oops {
+    color: #a80808;
+    font-size: 130%;
 }
