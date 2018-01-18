@@ -23,13 +23,15 @@ sent to an SMTP server.  You can see that while it happens.
   (If you don't trust that, use a coffee shop WiFi, some friend's computer,
   an internet cafe, or [Tor](https://www.torproject.org/)).
 
-* To guard against spoofing by admins, we do not log the text submitted,
-  and also that text is encrypted towards the recipients' S/MIME keys.
+* To guard against spoofing by admins or man-in-the-middle, we do not
+  log the text submitted, and also that text is encrypted towards the
+  recipients' S/MIME keys.  For the same reason, the subject-line is
+  fixed (as that's S/MIME unencrypted in S/MIME-mails), rather than
+  set-able by the user.
 
-* However, we don't do HTTPS ourselves (maybe some time we will, for
-  the time now, it's only a convenience that we don't).  We leave that
-  to a reverse proxy in front of us.  So when transiting the last yard
-  of network, your data is unencrypted.
+* However, we don't do HTTPS ourselves (maybe some time we will).  We
+  leave that to a reverse proxy in front of us.  So when transiting
+  the last yard of network, your data is unencrypted.
 
 ## Prerequisites (installation)
 
@@ -41,7 +43,7 @@ With Docker in place, run something like
 
     docker build -t registry.invalid/anonymous_inbox .
 
-or, if you are like me and use a local http proxy to speed up repeated
+or, if you are like me and use a local http cache to speed up repeated
 Docker builds:
 
     docker build --build-arg=http_proxy=http://192.168.0.1:3128/  -t registry.invalid/anonymous_inbox .
@@ -77,4 +79,3 @@ server on that box).
 
 Point your browser to that server and check the root page shows all
 the email addresses, one for each key you provided.
-
