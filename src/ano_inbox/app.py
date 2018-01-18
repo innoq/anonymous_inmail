@@ -67,7 +67,7 @@ def stream_from_template(**context):
 
 def do_the_sending(text):
     not_sent = '</pre><h2 class="oops">Ooops - something bad and unexpected happened.</h2><p class="oops">Your mail never got anywhere.</p><p>We are very sorry indeed!</p><pre>'
-    uncertain_wether_sent = '</pre><h2 class="oops">Ooops - something bad and unexpected happened.</h2><p class="oops">It is uncertain whether your mail got through.</p><p>We are very sorry indeed!</p><pre>'
+    uncertain_wether_sent = '</pre><h2 class="oops">Ooops - something bad and unexpected happened.</h2><p class="oops">It is uncertain whether your mail got through (probably not).</p><p>We are very sorry indeed!</p><pre>'
     good = '</pre><h2 class="ok">Your message has been sent.</h2><pre>'
     tried_to_send = False
     try:
@@ -89,6 +89,7 @@ def do_the_sending(text):
                 smtp.starttls()
                 yield(" done. Success. (Server certificate verification not implemented, though.)\n")
                 yield("Trying to send the mail...")
+                tried_to_send = True
                 smtp_done = smtp.sendmail(config['from_addr'], config['recipients'], heads + encrypted_message)
                 if 0 == len(smtp_done.keys()):
                     yield(" done. Message was accepted.\n" + good)
