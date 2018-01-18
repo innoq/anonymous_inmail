@@ -6,14 +6,18 @@ from smtplib import SMTP
 import subprocess
 import sys
 import tempfile
+from wsgi_basic_auth import BasicAuth
 
-app = Flask(__name__)
+inner_app = Flask(__name__)
+
+# This is what we'll tell gunicorn to use:
+auth_app = None # To be set later.
 
 # Static configuration that does not change through the life of this worker:
 config = {}
 # Code to set this has been moved to the bottom of the file to enhance readability.
 
-@app.route('/')
+@inner_app.route('/')
 def entrance():
     if config['all_is_well']:
         return render_template('index.html', \
@@ -25,7 +29,7 @@ def entrance():
         response.status_code = 500
         return response
 
-@app.route("/submit", methods=['POST'])
+@inner_app.route("/submit", methods=['POST'])
 def submit():
     if config['all_is_well']:
         text = request.form.get('text')
@@ -41,9 +45,22 @@ def submit():
     else:
         return make_response(render_template('problem.html')), 500
 
+@inner_app.route('/health')
+def health():
+    def text():
+        if config['all_is_well']:
+            yield("All is well.\n")
+        else:
+            yield("There is a setup problem. See log.\n")
+    resp = Response(text())
+    resp.mimetype = "text/plain"
+    if not config['all_is_well']:
+        resp.status_code = 500
+    return resp
+
 def stream_from_template(**context):
-    app.update_template_context(context)
-    template = app.jinja_env.get_template('send.html')
+    inner_app.update_template_context(context)
+    template = inner_app.jinja_env.get_template('send.html')
     rv = template.stream(context)
     rv.disable_buffering()
     return rv
@@ -68,7 +85,7 @@ def do_the_sending(text):
             yield("Connecting to mail server...")
             with SMTP(host = config['smtp_host'], port = 25) as smtp:
                 yield(" done. Success.\n")
-                yield("Establishing encrypted connection to mail server...")
+                yield("Upgrading connection to mail server to encryption...")
                 smtp.starttls()
                 yield(" done. Success. (Server certificate verification not implemented, though.)\n")
                 yield("Trying to send the mail...")
@@ -144,13 +161,13 @@ config['recipients'], config['keyfiles'], config['have_several_recipients'], con
 config['title'] = os.environ.get("ano_inbox.title", "Sending anonymous email.")
 config['subject'] = os.environ.get("ano_inbox.subject", "Incoming anonymous email.")
 
-config['smtp_host'] = os.environ.get("ano_inbox.smtp_host")
-if not config['smtp_host']:
-    sys.stderr.write("ERROR: ano_inbox.smtp_host not set.\n")
-    config['all_is_well'] = False
+for key in ['smtp_host', 'from_addr', 'user', 'passwd']:
+    config[key] = os.environ.get("ano_inbox.{}".format(key))
+    if not config[key]:
+        sys.stderr.write("ERROR: Environment variable ano_inbox.{} is missing.\n".format(key))
+        config['all_is_well'] = False
 
-config['from_addr'] = os.environ.get("ano_inbox.from_addr")
-if not config['from_addr']:
-    sys.stderr.write("ERROR: ano_inbox.from_addr not set.\n")
-    config['all_is_well'] = False
+sys.stderr.flush()
+
+auth_app = BasicAuth(inner_app, users = {config['user']: config['passwd']}, exclude_paths = ['/health'])
 

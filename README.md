@@ -1,12 +1,12 @@
 # Anonymous Inbox
 
-This allows INNOQ-employees to anonymously send emails to their
-bosses.  In essence, this is a very basic web mailer.
+This allows employees to anonymously send emails to their bosses.  In
+essence, this is a very basic web mailer (send only).
 
-## How do we protect from Spam?
+## How to protect from Spam?
 
 The URI and the basic auth credentials are well-known inside the company,
-but not published outside.  We occasionally change the credentials.
+but not published outside.  Occasionally change the credentials.
 
 ## How does it work?
 
@@ -19,17 +19,17 @@ sent to an SMTP server.  You can see that while it happens.
 
 * No cookies, sessions, external resources.
 
-* You can trust us to never log the IP of the incoming mail submission
-  (or, if you don't, use a coffee shop WiFi, some friend's computer,
+* The application never logs the IP of the incoming mail submission
+  (If you don't trust that, use a coffee shop WiFi, some friend's computer,
   an internet cafe, or [Tor](https://www.torproject.org/)).
 
 * To guard against spoofing by admins, we do not log the text submitted,
   and also that text is encrypted towards the recipients' S/MIME keys.
 
-* We don't do HTTPS ourselves (maybe some time we will, for the time
-  now, it's only a convenience that we don't).  We leave that to a
-  reverse proxy in front of us.  So the last yard of network, your
-  data is unencrypted.
+* However, we don't do HTTPS ourselves (maybe some time we will, for
+  the time now, it's only a convenience that we don't).  We leave that
+  to a reverse proxy in front of us.  So when transiting the last yard
+  of network, your data is unencrypted.
 
 ## Prerequisites (installation)
 
@@ -37,7 +37,7 @@ Docker.
 
 ## Build
 
-With that in place, run something like
+With Docker in place, run something like
 
     docker build -t registry.invalid/anonymous_mailbox .
 
@@ -64,6 +64,8 @@ recipient addresses will be extracted automatically.
 
 `ano_inbox.subject` The subject line that'll be seen by the recipient(s), default "Incoming anonymous email.".
 
+`ano_inbox.user` `ano_inbox.passwd` The crendentials required (basic auth, not needed for `/health`).
+
 ## Run
 
 Something like
@@ -71,7 +73,8 @@ Something like
     docker run --env=... --publish 80:14505 registry.invalid/anonymous_mailbox
 
 (or choose another port instead of the 80 if you already run an HTTP
-server).
+server on that box).
 
 Point your browser to that server and check the root page shows all
 the email addresses, one for each key you provided.
+
