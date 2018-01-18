@@ -8,6 +8,10 @@ body form .inform input {
     font-size: 130%;
 }
 
+.ok {
+    color: #08a808;
+}
+
 .text, .log {
     background-color: #e8e8e8;
 }

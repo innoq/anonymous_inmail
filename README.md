@@ -54,9 +54,15 @@ used on your machine.
 `ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
 
 `ano_inbox.key0`, `ano_inbox.key1` `ano_inbox.key2` `ano_inbox.key3`
-(at least one) the X.509 certificates (PEM format) of the people you
-want to send emails.
+(at least one) the X.509 certificates (PEM format, including line
+breaks and all) of the people you want to send emails.  Their
+recipient addresses will be extracted automatically.
 
+`ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on port 25 and supports starttls.
+
+`ano_inbox.from_addr` What you want to set as the sender address of the mails.
+
+`ano_inbox.subject` The subject line that'll be seen by the recipient(s), default "Incoming anonymous email.".
 
 ## Run
 
