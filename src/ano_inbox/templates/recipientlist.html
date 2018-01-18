@@ -1,0 +1,10 @@
+{% if have_several_recipients %}
+<p>Email recipients will be</p>
+<ul>
+  {% for recipient in recipients %}
+  <li>{{ recipient }}</li>
+  {% endfor %}
+</ul>
+{% else %}
+<p>Email recipient will be {{recipients[0]}}.</p>
+{% endif %}

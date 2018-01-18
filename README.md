@@ -53,8 +53,10 @@ used on your machine.
 
 `ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
 
-`ano_inbox.recipients` The recipient(s) to send mail to, separated by
-";".  No default, you *must* provide these.
+`ano_inbox.key0`, `ano_inbox.key1` `ano_inbox.key2` `ano_inbox.key3`
+(at least one) the X.509 certificates (PEM format) of the people you
+want to send emails.
+
 
 ## Run
 
@@ -63,4 +65,7 @@ Something like
     docker run --env=... --publish 80:14505 registry.invalid/anonymous_mailbox
 
 (or choose another port instead of the 80 if you already run an HTTP
-server).  But then, you'd have to also provide the environment variables.
+server).
+
+Point your browser to that server and check the root page shows all
+the email addresses, one for each key you provided.

@@ -6,12 +6,7 @@
   </head>
   <body>
     <h1>{{ title }}</h1>
-    <p>Email recipients will be</p>
-    <ul>
-      {% for recipient in recipients %}
-      <li>{{ recipient }}</li>
-      {% endfor %}
-    </ul>
+    {% include 'recipientlist.html' %}
     <form autocomplete="off" enctype="multipart/form-data" method="POST" action="/submit">
       <textarea name="text" rows="30" cols="130" ></textarea>
       <div class="inform">

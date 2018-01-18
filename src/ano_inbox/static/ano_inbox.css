@@ -7,3 +7,7 @@ body form .inform input {
     color: #a80808;
     font-size: 130%;
 }
+
+.text, .log {
+    background-color: #e8e8e8;
+}

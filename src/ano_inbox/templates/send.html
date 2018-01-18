@@ -7,17 +7,12 @@
   <body>
     <h1>Sending your data</h1>
     
-    <p>Email recipients will be</p>
-    <ul>
-      {% for recipient in recipients %}
-      <li>{{ recipient }}</li>
-      {% endfor %}
-    </ul>
+    {% include 'recipientlist.html' %}
 
-    <h2>You text we are about to send</h2>
-    <pre>{{ text }}</pre>
+    <h2>Your text we are about to send</h2>
+    <pre class="text">{{ text }}</pre>
 
     <h3>Here is a log of the technical stuff as we are doing it.</h3>
-    <pre>{% for partial_output in action %}{{ partial_output | safe }}{% endfor %}</pre>
+    <pre class="log">{% for partial_output in action %}{{ partial_output | safe }}{% endfor %}</pre>
   </body>
 </html>
