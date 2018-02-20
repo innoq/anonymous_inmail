@@ -55,40 +55,50 @@ used on your machine.
 
 `ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
 
-`ano_inbox.key0`, `ano_inbox.key1` `ano_inbox.key2` `ano_inbox.key3`
-(at least one) the X.509 certificates (PEM format, including line
-breaks and all) of the people you want to send emails.  Their
-recipient addresses will be extracted automatically.
-
-If you have problems getting line breaks into these environment
-variables, here are two ways out:
-
-* If there is no initial `-----BEGIN CERTIFICATE-----` line, but the
-  environment variable's value starts with `https://` (or `http://`,
-  but, generally speaking, don't do that), the program will assume a
-  URI, will issue a get request to retrieve the value behind that URI,
-  and, if that succeeds, assume what it now has is the key in PEM
-  format (again with line breaks and all).  Caveat: *This happens once
-  each time a new worker is started.* So you should keep that key
-  server up and running beyond the start of this service.  (You
-  probably want to prefer the next option, and use this one only as a
-  means of last resort.)
-  
-* If neither `https://` nor `http://` are found, the program will
-  attempt to base64-decode the value and assume the result is the key
-  in PEM format (again with line breaks and all).  If you have the
-  `base64` command line tool, put the output of `base64 -w 0 <
-  my_public_key.pem` (on Linux) resp. `base64 -b 0 <
-  my_public_key.pem` (on Mac) into the variable and you should be fine.
-
-`ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on
-port 25 and supports starttls.
-
 `ano_inbox.from_addr` What you want to set as the sender address of the mails.
 
 `ano_inbox.subject` The subject line that'll be seen by the recipient(s), default "Incoming anonymous email.".
 
 `ano_inbox.user` `ano_inbox.passwd` The crendentials required (basic auth, not needed for `/health`).
+
+`ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on
+port 25 and supports starttls.
+
+`ano_inbox.key0`, `ano_inbox.key1`, `ano_inbox.key2`,
+`ano_inbox.key3`, ... (at least one): The X.509 certificates of the
+people you want to receive the emails.  Their recipient addresses will
+be extracted automatically.
+
+We need PEM format, including line breaks and all.  If you have
+problems getting line breaks into the environment variables, here are
+some ways out:
+
+* If there is no initial `-----BEGIN CERTIFICATE-----` line in such a
+  variable's value, but it starts with `https://` (or `http://`, but,
+  generally speaking, don't do that), the program will assume a URI,
+  will issue a GET request to retrieve the value behind that URI, and,
+  if that succeeds, assume what it now has is the key in PEM format
+  (again with line breaks and all).  Caveat: **The keys are retrieved
+  each time a new worker is started.** So you should keep that key
+  server up and running beyond the start of this service.  (You may
+  prefer the next option, and use this one only as a means of last
+  resort.)
+  
+* If the value starts with neither `-----BEGIN CERTIFICATE-----`, nor
+  `https://`, nor `http://`, the program will attempt to base64-decode
+  the value and assume the result is the key in PEM format (again with
+  line breaks and all).  So this is the recommendation what to use, if
+  you can't put the bare certificate with line breaks into the
+  environment variable.
+
+For base64 encoding, you can use the output of the `base64` tool.
+This tool is contained in the Docker image you've built.  Run
+something like
+
+    docker run --rm -i registry.invalid/anonymous_inbox base64 -w 0 < my-public-cert.pem; echo
+
+and copy the output into the environment variable.  (If you want to
+run `base64` locally on a Mac instead, replace `-w 0` with `-b 0`.)
 
 ## Run
 
