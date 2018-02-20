@@ -78,7 +78,7 @@ variables, here are two ways out:
   attempt to base64-decode the value and assume the result is the key
   in PEM format (again with line breaks and all).  If you have the
   `base64` command line tool, put the output of `base64 -w 0 <
-  my_public_email.pem` into the variable and you should be fine.
+  my_public_key.pem` into the variable and you should be fine.
 
 `ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on
 port 25 and supports starttls.
