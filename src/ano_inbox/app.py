@@ -1,7 +1,9 @@
+import base64
 import email.utils
 from flask import Flask, render_template, make_response, request, Response
 import os
 import re
+import requests
 from smtplib import SMTP
 import subprocess
 import sys
@@ -118,11 +120,29 @@ def handle_mime_keys():
 
     def extract_from_env():
         i = 0
-        key = os.environ.get("ano_inbox.key{}".format(i))
-        while key:
-            yield [i, key]
+        env_name = "ano_inbox.key{}".format(i)
+        raw_key = os.environ.get(env_name)
+        while raw_key:
+            if re.match("\-+BEGIN CERTIFICATE\-+\n", raw_key):
+                sys.stderr.write("INFO: Accessing {} value as is.\n".format(env_name))
+                boiled_key = raw_key
+            elif re.match("https?\:\/\/", raw_key):
+                sys.stderr.write("INFO: Accessing {} value as HTTP GET.\n".format(env_name))
+                sys.stderr.flush()
+                response = requests.get(raw_key)
+                response.raise_for_status()
+                boiled_key = response.text
+                sys.stderr.write("INFO: Appearent success accessing {} value as HTTP GET.\n".format(env_name))
+                sys.stderr.flush()
+            else:
+                sys.stderr.write("INFO: Base64-decoding {} value.\n".format(env_name))
+                sys.stderr.flush()
+                boiled_key = base64.standard_b64decode(raw_key).decode()
+                sys.stderr.write("INFO: Appearent success base64-decoding {} value.\n".format(env_name))
+            yield [i, boiled_key]
             i += 1
-            key = os.environ.get("ano_inbox.key{}".format(i))
+            env_name = "ano_inbox.key{}".format(i)
+            raw_key = os.environ.get(env_name)
 
     recipients = []
     keyfiles = []
@@ -142,6 +162,8 @@ def handle_mime_keys():
                 if match:
                     email = match.group(1)
             if email:
+                sys.stderr.write("INFO: Got key and recipient email for {}.\n".format(email))
+                sys.stderr.flush()
                 recipients.append(email)
                 keyfiles.append(keyfilename)
             else:

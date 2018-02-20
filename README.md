@@ -60,7 +60,28 @@ used on your machine.
 breaks and all) of the people you want to send emails.  Their
 recipient addresses will be extracted automatically.
 
-`ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on port 25 and supports starttls.
+If you have problems getting line breaks into these environment
+variables, here are two ways out:
+
+* If there is no initial `-----BEGIN CERTIFICATE-----` line, but the
+  environment variable's value starts with `https://` (or `http://`,
+  but, generally speaking, don't do that), the program will assume a
+  URI, will issue a get request to retrieve the value behind that URI,
+  and, if that succeeds, assume what it now has is the key in PEM
+  format (again with line breaks and all).  Caveat: *This happens once
+  each time a new worker is started.* So you should keep that key
+  server up and running beyond the start of this service.  (You
+  probably want to prefer the next option, and use this one only as a
+  means of last resort.)
+  
+* If neither `https://` nor `http://` are found, the program will
+  attempt to base64-decode the value and assume the result is the key
+  in PEM format (again with line breaks and all).  If you have the
+  `base64` command line tool, put the output of `base64 -w 0 &lt;
+  my_public_email.pem` into the variable and you should be fine.
+
+`ano_inbox.smtp_host` The SMTP host we'll use. Make sure it listens on
+port 25 and supports starttls.
 
 `ano_inbox.from_addr` What you want to set as the sender address of the mails.
 
