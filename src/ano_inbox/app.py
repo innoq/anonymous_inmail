@@ -36,7 +36,10 @@ def submit():
     if config['all_is_well']:
         text = request.form.get('text')
         if text and 0 < len(text.strip()):
-            return Response(stream_from_template(text = text, recipients = config['recipients'], action = do_the_sending(text)))
+            return Response(stream_from_template(text = text, \
+                                                 have_several_recipients = config['have_several_recipients'], \
+                                                 recipients = config['recipients'], \
+                                                 action = do_the_sending(text)))
         else:
             def please():
                 yield("Provide some text, yes?\n\n")
