@@ -54,11 +54,12 @@ used on your machine.
 ## Environment variables for configuration
 
 `ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
-**The content must be US-ASCII, or sending will fail.**
 
-`ano_inbox.from_addr` What you want to set as the sender address of the mails.
+`ano_inbox.from_addr` What you want to set as the sender address of
+the mails. Must be ASCII, or sending will fail.
 
 `ano_inbox.subject` The subject line that'll be seen by the recipient(s), default "Incoming anonymous email.".
+ Must be ASCII, or sending will fail.
 
 `ano_inbox.user` `ano_inbox.passwd` The crendentials required (basic auth, not needed for `/health`).
 
