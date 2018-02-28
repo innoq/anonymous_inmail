@@ -54,6 +54,7 @@ used on your machine.
 ## Environment variables for configuration
 
 `ano_inbox.title` The title to be displayed. Default: "Sending anonymous email."
+**The content must be US-ASCII, or sending will fail.**
 
 `ano_inbox.from_addr` What you want to set as the sender address of the mails.
 
